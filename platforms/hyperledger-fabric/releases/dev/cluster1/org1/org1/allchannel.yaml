@@ -1,0 +1,50 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: channel-org1-allchannel
+  namespace: org1-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: channel-org1-allchannel
+  chart:
+    git: git@github.com:sidnaik1989/blockchain-automation-framework.git
+    ref: feature/fabric220
+    path: platforms/hyperledger-fabric/charts/create_channel   
+  values:
+    metadata:
+      namespace: org1-net
+      network:
+        version 2.2.0
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.0
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.org1-net:7051
+      localmspid: org1MSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vaultserver.eastus.cloudapp.azure.com:9200
+      authpath: org1-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/org1-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/org1-net/orderer 
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: allchannel
+    orderer:
+      address: orderer1.ordererorg.cluster1.pslblockchaincloudpoc.com:8443
+    channeltx: |-
+      CsUDChgKFggCGgYI/cH+gQYiCmFsbGNoYW5uZWwSqAMKpQMKCmFsbGNoYW5uZWwSOxIpCgtBcHBs
+      aWNhdGlvbhIaEgsKB29yZzJNU1ASABILCgdvcmcxTVNQEgAaDgoKQ29uc29ydGl1bRIAGtkCEqsC
+      CgtBcHBsaWNhdGlvbhKbAggBEgsKB29yZzFNU1ASABILCgdvcmcyTVNQEgAaJAoMQ2FwYWJpbGl0
+      aWVzEhQSCgoICgRWMl8wEgAaBkFkbWlucyIiCgdSZWFkZXJzEhcSDQgDEgkKB1JlYWRlcnMaBkFk
+      bWlucyIiCgdXcml0ZXJzEhcSDQgDEgkKB1dyaXRlcnMaBkFkbWlucyIiCgZBZG1pbnMSGBIOCAMS
+      CgoGQWRtaW5zEAIaBkFkbWlucyIsCgtFbmRvcnNlbWVudBIdEhMIAxIPCgtFbmRvcnNlbWVudBAC
+      GgZBZG1pbnMiNQoUTGlmZWN5Y2xlRW5kb3JzZW1lbnQSHRITCAMSDwoLRW5kb3JzZW1lbnQQAhoG
+      QWRtaW5zKgZBZG1pbnMaKQoKQ29uc29ydGl1bRIbEhkKF0Fzc2V0VHJhbnNmZXJDb25zb3J0aXVt
