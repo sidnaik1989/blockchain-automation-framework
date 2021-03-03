@@ -14,7 +14,9 @@
     echo "---------------GIT PUSH---------------"
     git config user.email {{ GIT_EMAIL }}
     git config user.name {{ GIT_USERNAME }}
-    git --git-dir={{ GIT_DIR }}/.git add -A .
+    change_path={{ release_dir if release_dir is defined else '.' | default('.') }}
+    echo "change path $change_path"
+    git --git-dir={{ GIT_DIR }}/.git add -A $change_path
     
     # To ignore a directory add it add reset path
     reset_path={{ GIT_RESET_PATH if GIT_RESET_PATH is defined else '' | default('') }}
