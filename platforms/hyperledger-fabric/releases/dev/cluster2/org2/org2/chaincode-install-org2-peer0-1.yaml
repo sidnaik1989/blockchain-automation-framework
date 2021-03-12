@@ -1,0 +1,52 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: chaincode-install-org2-peer0-1
+  namespace: org2-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: chaincode-install-org2-peer0-1
+  chart:
+    git: git@github.com:bafazureuser2/blockchain-automation-framework.git
+    ref: feature/fabric220
+    path: platforms/hyperledger-fabric/charts/install_chaincode
+  values:
+    metadata:
+      namespace: org2-net
+      network:
+        version: 2.2.0
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.0
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.org2-net:7051
+      localmspid: org2MSP
+      loglevel: debug
+      tlsstatus: true
+    vault:
+      role: vault-role
+      address: http://vaultserver.eastus.cloudapp.azure.com:10200
+      authpath: org2-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/org2-net/users/admin 
+      orderersecretprefix: secret/crypto/peerOrganizations/org2-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      secretgitprivatekey: secret/credentials/org2-net/git?git_password
+      tls: false
+    orderer:
+      address: orderer1.ordererorg.cluster1.pslblockchaincloudpoc.com:8443
+    chaincode:
+      builder: hyperledger/fabric-ccenv:2.2.0
+      name: fabcar
+      version: 1
+      lang: java
+      maindirectory: 
+      repository:
+        hostname: "github.com"
+        git_username: "sidnaik1989"
+        url: github.com/hyperledger/fabric-samples.git
+        branch: master
+        path: chaincode/fabcar/java/
+      endorsementpolicies:  ''
