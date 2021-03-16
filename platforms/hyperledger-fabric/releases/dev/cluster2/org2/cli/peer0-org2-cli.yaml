@@ -1,0 +1,38 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: peer0-org2-cli
+  namespace: org2-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: peer0-org2-cli
+  chart:
+    git: git@github.com:bafazureuser2/blockchain-automation-framework.git
+    ref: feature/fabric220
+    path: platforms/hyperledger-fabric/charts/fabric_cli    
+  values:
+    metadata:
+      namespace: org2-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.0
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    storage:
+      class: org2sc
+      size: 256Mi
+    vault:
+      role: vault-role
+      address: http://vaultserver.eastus.cloudapp.azure.com:10200
+      authpath: org2-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/org2-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/org2-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      tls: false
+    peer:
+      name: peer0
+      localmspid: org2MSP
+      tlsstatus: true
+      address: peer0.org2-net.org2.cluster2.pslblockchaincloudpoc.com:8443
+    orderer:
+      address: orderer1.ordererorg.cluster1.pslblockchaincloudpoc.com:8443
